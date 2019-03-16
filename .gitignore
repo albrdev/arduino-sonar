@@ -1,0 +1,7 @@
+*
+!.gitignore
+!.gitattributes
+!transmitter/
+!transmitter/**/*
+!receiver/
+!receiver/**/*
