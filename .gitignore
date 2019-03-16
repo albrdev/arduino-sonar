@@ -5,3 +5,4 @@
 !transmitter/**/*
 !receiver/
 !receiver/**/*
+!*.md
