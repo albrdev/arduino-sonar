@@ -30,13 +30,14 @@ void OnEndRotation(void)
 }
 
 bool isPaused = true;
-void OnPauseButtonPushed(void)
+void togglePause(void)
 {
     isPaused = !isPaused;
-    delay(100UL);
 
     if(isPaused) timer.Stop();
     else timer.Start();
+
+    delay(125UL);
 }
 
 void setup(void)
@@ -48,7 +49,7 @@ void setup(void)
     stepMotor.SetOnEndRotationCallback(OnEndRotation);
     stepMotor.Rotate(ROTATION_MAX / 2.0);
 
-    pauseButton.SetPushCallback(OnPauseButtonPushed);
+    pauseButton.SetReleaseCallback(togglePause);
 }
 
 void loop(void)
