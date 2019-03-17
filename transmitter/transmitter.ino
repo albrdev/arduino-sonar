@@ -8,7 +8,7 @@
 #include "Timer.hpp"
 #include "Button.hpp"
 
-float getangle(const int steps, const int maxSteps)
+float getAngle(const int steps, const int maxSteps)
 {
     float angle = 360.0f * normalize01((float)steps, 0, maxSteps);
     return angle < 360.0f ? angle : 0.0f;
@@ -24,9 +24,23 @@ Timer timer(50UL, true, false);
 
 Button pauseButton(4);
 
-void OnEndRotation(void)
+void restartRotation(void)
 {
     stepMotor.Rotate(ROTATION_MAX * -stepMotor.GetStepDirection());
+}
+
+void transmitData(void)
+{
+    float distance = (float)sonicSensor.GetDistance();
+    if(distance >= 0.0)
+    {
+        float angle = (float)stepMotor.GetAngle();
+
+        packet_sonardata_t packet;
+        packet_mksonardata(&packet, distance, angle);
+        Serial.write((char *)&packet, sizeof(packet_sonardata_t));
+        Serial.flush();
+    }
 }
 
 bool isPaused = true;
@@ -46,9 +60,10 @@ void setup(void)
     Serial.begin(9600, SERIAL_8N1);
 
     stepMotor.setSpeed(120);
-    stepMotor.SetOnEndRotationCallback(OnEndRotation);
+    stepMotor.SetOnEndRotationCallback(restartRotation);
     stepMotor.Rotate(ROTATION_MAX / 2.0);
 
+    timer.SetTriggerCallback(transmitData);
     pauseButton.SetReleaseCallback(togglePause);
 }
 
@@ -60,19 +75,6 @@ void loop(void)
         return;
     }
 
-    if(timer)
-    {
-        float distance = (float)sonicSensor.GetDistance();
-        if(distance >= 0.0)
-        {
-            float angle = (float)stepMotor.GetAngle();
-
-            packet_sonardata_t packet;
-            packet_mksonardata(&packet, distance, angle);
-            Serial.write((char *)&packet, sizeof(packet_sonardata_t));
-            Serial.flush();
-        }
-    }
-
+    timer.Poll();
     stepMotor.UpdateRotation();
 }
