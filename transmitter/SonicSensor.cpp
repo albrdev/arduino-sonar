@@ -49,13 +49,14 @@ double SonicSensor::GetDistance(void) const
         return -1.0;
     }
 
-    return (duration * (SPEED_OF_SOUND / 1000000.0)) / 2.0;
+    return (duration * (SPEED_OF_SOUND / m_Factor)) / 2.0;
 }
 
-SonicSensor::SonicSensor(const uint8_t triggerPin, const uint8_t echoPin, const unsigned long int timeout)
+SonicSensor::SonicSensor(const uint8_t triggerPin, const uint8_t echoPin, const double factor, const unsigned long int timeout)
 {
     m_TriggerPin = triggerPin;
     m_EchoPin = echoPin;
+    m_Factor = factor;
     m_Timeout = timeout;
 
     pinMode(m_TriggerPin, OUTPUT);

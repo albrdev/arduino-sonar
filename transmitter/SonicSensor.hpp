@@ -10,7 +10,7 @@ protected:
 
     uint8_t m_TriggerPin;
     uint8_t m_EchoPin;
-
+    double m_Factor;
     unsigned long int m_Timeout;
 
     bool PulseIn(const uint8_t value, unsigned long int &result) const;
@@ -21,7 +21,7 @@ public:
 
     double GetDistance(void) const;
 
-    SonicSensor(const uint8_t triggerPin, const uint8_t echoPin, const unsigned long int timeout = 50000UL);
+    SonicSensor(const uint8_t triggerPin, const uint8_t echoPin, const double factor = 1000000.0, const unsigned long int timeout = 50000UL);
 };
 
 #endif // __SONICSENSOR_HPP__
