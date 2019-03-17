@@ -14,7 +14,12 @@ float getAngle(const int steps, const int maxSteps)
     return angle < 360.0f ? angle : 0.0f;
 }
 
-SonicSensor sonicSensor(2, 3, 50000UL);
+const double SONICSENSOR_MINRANGE = 0.02;
+const double SONICSENSOR_MAXRANGE = 4.0;
+const double SONICSENSOR_RESOLUTION = 0.003;
+const double SONICSENSOR_RANGEFACTOR = 1000000.0;
+const unsigned long int SONICSENSOR_TIMEOUT = 50000UL;
+SonicSensor sonicSensor(2, 3, SONICSENSOR_RANGEFACTOR, SONICSENSOR_TIMEOUT);
 
 ExtendedStepper stepMotor(64, 8, 9, 10, 11);
 //const double ROTATION_MAX = 360.0;
@@ -29,18 +34,27 @@ void restartRotation(void)
     stepMotor.Rotate(ROTATION_MAX * -stepMotor.GetStepDirection());
 }
 
+double lastDistance = 0.0;
 void transmitData(void)
 {
     float distance = (float)sonicSensor.GetDistance();
-    if(distance >= 0.0)
-    {
-        float angle = (float)stepMotor.GetAngle();
+    if(distance < SONICSENSOR_MINRANGE || distance > SONICSENSOR_MAXRANGE) { return; }
 
-        packet_sonardata_t packet;
-        packet_mksonardata(&packet, distance, angle);
-        Serial.write((char *)&packet, sizeof(packet_sonardata_t));
-        Serial.flush();
+    if(absdiff(distance, lastDistance) < SONICSENSOR_RESOLUTION)
+    {
+        distance = lastDistance;
     }
+    else
+    {
+        lastDistance = distance;
+    }
+
+    float angle = (float)stepMotor.GetAngle();
+
+    packet_sonardata_t packet;
+    packet_mksonardata(&packet, distance, angle);
+    Serial.write((char *)&packet, sizeof(packet_sonardata_t));
+    Serial.flush();
 }
 
 bool isPaused = true;
