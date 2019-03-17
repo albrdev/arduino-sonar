@@ -3,26 +3,28 @@
 
 #include <stdint.h> /* uint8_t */
 
+typedef void(*button_triggercallback_t)(void);
+
 class Button
 {
 private:
     uint8_t m_Pin;
-    bool m_State;
+    bool m_PreviousState;
 
-    void(*m_PushCallback)(void) = nullptr;
-    void(*m_ReleaseCallback)(void) = nullptr;
-    void(*m_HoldCallback)(void) = nullptr;
+    button_triggercallback_t m_PushCallback = nullptr;
+    button_triggercallback_t m_ReleaseCallback = nullptr;
+    button_triggercallback_t m_HoldCallback = nullptr;
 
 public:
     bool GetState(void) const;
 
-    void SetPushCallback(void(*value)(void));
-    void SetReleaseCallback(void(*value)(void));
-    void SetHoldCallback(void(*value)(void));
+    void SetPushCallback(const button_triggercallback_t value);
+    void SetReleaseCallback(const button_triggercallback_t value);
+    void SetHoldCallback(const button_triggercallback_t value);
 
     void Poll(void);
 
-    Button(uint8_t pin);
+    Button(const uint8_t pin);
 };
 
 #endif // __BUTTON_HPP__

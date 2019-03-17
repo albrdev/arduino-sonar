@@ -6,17 +6,17 @@ bool Button::GetState(void) const
     return digitalRead(m_Pin);
 }
 
-void Button::SetPushCallback(void(*value)(void))
+void Button::SetPushCallback(const button_triggercallback_t value)
 {
     m_PushCallback = value;
 }
 
-void Button::SetReleaseCallback(void(*value)(void))
+void Button::SetReleaseCallback(const button_triggercallback_t value)
 {
     m_ReleaseCallback = value;
 }
 
-void Button::SetHoldCallback(void(*value)(void))
+void Button::SetHoldCallback(const button_triggercallback_t value)
 {
     m_HoldCallback = value;
 }
@@ -24,9 +24,9 @@ void Button::SetHoldCallback(void(*value)(void))
 void Button::Poll(void)
 {
     bool state = digitalRead(m_Pin);
-    if(state != m_State)
+    if(state != m_PreviousState)
     {
-        m_State = state;
+        m_PreviousState = state;
 
         if(state)
         {
@@ -46,10 +46,10 @@ void Button::Poll(void)
     }
 }
 
-Button::Button(uint8_t pin)
+Button::Button(const uint8_t pin)
 {
     m_Pin = pin;
 
     pinMode(m_Pin, INPUT);
-    m_State = digitalRead(m_Pin);
+    m_PreviousState = digitalRead(m_Pin);
 }
