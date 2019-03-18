@@ -186,26 +186,26 @@ public static class SonarSerialReceiver
                     IEnumerable<IEnumerable<byte>> bytes = packetBuffer.Split(packetSize);
                     unsafe
                     {
-                        IntPtr pointer = Marshal.AllocHGlobal(packetSize);
                         foreach(var packet in bytes)
                         {
-                            Marshal.Copy(packet.ToArray(), 0, pointer, packetSize);
-                            int checksumSize = Marshal.SizeOf(((Packet.SonarData*)pointer)->Header.Checksum);
-                            //debug.Append("PacketCRC={0}, LocalCRC={1}", ((Packet.SonarData*)pointer)->Header.Checksum, CRC16.Generate((byte*)(pointer + checksumSize), packetSize - checksumSize));//
-                            if(Packet.Verify((Packet.Header*)pointer, packetSize))
+                            fixed(byte* pointer = packet.ToArray())
                             {
-                                //debug.AppendLine(", VALID");//
-                                Data = (Packet.SonarData*)pointer;
-                                OnUpdate?.Invoke(Data);
-                            }
-                            else
-                            {
-                                //debug.AppendLine(", FAIL");//
-                                //debug.LogMode = DebugLogMode.Warning;
+                                //int checksumSize = Marshal.SizeOf(((Packet.SonarData*)pointer)->Header.Checksum);//
+                                //debug.Append("PacketCRC={0}, LocalCRC={1}", ((Packet.SonarData*)pointer)->Header.Checksum, CRC16.Generate((byte*)(pointer + checksumSize), packetSize - checksumSize));//
+                                if(Packet.Verify((Packet.Header*)pointer, packetSize))
+                                {
+                                    Data = (Packet.SonarData*)pointer;
+                                    OnUpdate?.Invoke(Data);
+                                    //debug.AppendLine(", VALID");//
+                                    //debug.AppendLine(", {0}", Data);//
+                                }
+                                /*else
+                                {
+                                    //debug.AppendLine(", FAIL");//
+                                    //debug.LogMode = DebugLogMode.Warning;
+                                }*/
                             }
                         }
-
-                        Marshal.FreeHGlobal(pointer);
                     }
 
                     //debug.Print();//
