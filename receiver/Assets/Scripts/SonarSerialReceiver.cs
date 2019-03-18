@@ -168,7 +168,7 @@ public static class SonarSerialReceiver
             {
                 do
                 {
-                    //DebugStringBuilder debug = new DebugStringBuilder("RECV: ");
+                    //DebugStringBuilder debug = new DebugStringBuilder("RECV: ");//
                     int packetSize = Marshal.SizeOf(typeof(Packet.SonarData));
 
                     int packetCount = s_SerialPort.BytesToRead / packetSize;
@@ -202,7 +202,7 @@ public static class SonarSerialReceiver
                                 /*else
                                 {
                                     //debug.AppendLine(", FAIL");//
-                                    //debug.LogMode = DebugLogMode.Warning;
+                                    //debug.LogMode = DebugLogMode.Warning;//
                                 }*/
                             }
                         }
