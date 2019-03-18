@@ -8,6 +8,8 @@ using UnityEngine;
 using Assets.Scripts.Networking;
 using Assets.Scripts.Cryptography.CRC;
 using Assets.Scripts.ExtensionClasses;
+using System.Diagnostics;
+using System.Text;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1), Serializable]
 public struct SonarInput
@@ -166,15 +168,19 @@ public static class SonarSerialReceiver
             {
                 do
                 {
+                    //DebugStringBuilder debug = new DebugStringBuilder("RECV: ");
                     int packetSize = Marshal.SizeOf(typeof(Packet.SonarData));
 
                     int packetCount = s_SerialPort.BytesToRead / packetSize;
+                    //debug.Append("TotalSize={0}, PacketCount={1}", s_SerialPort.BytesToRead, packetCount);//
                     if(packetCount <= 0) break;
 
                     int packetChunkSize = packetCount * packetSize;
                     byte[] packetBuffer = new byte[packetChunkSize];
+                    //debug.Append(", PacketsSize={0}", packetChunkSize);//
 
                     int readSize = s_SerialPort.Read(packetBuffer, 0, packetChunkSize);
+                    //debug.AppendLine(", ReadSize={0}", readSize);//
                     if(readSize % packetSize != 0) break;
 
                     IEnumerable<IEnumerable<byte>> bytes = packetBuffer.Split(packetSize);
@@ -184,18 +190,25 @@ public static class SonarSerialReceiver
                         foreach(var packet in bytes)
                         {
                             Marshal.Copy(packet.ToArray(), 0, pointer, packetSize);
-                            UInt16 checksum = CRC16.Generate((byte*)(pointer + sizeof(UInt16)), packetSize - sizeof(UInt16));
-
-                            //DebugTools.Print("Size={0}, Checksum1={1}, Checksum2={2}", len, ((SonarData*)unmanagedPointer)->header.checksum, checksum);
+                            int checksumSize = Marshal.SizeOf(((Packet.SonarData*)pointer)->Header.Checksum);
+                            //debug.Append("PacketCRC={0}, LocalCRC={1}", ((Packet.SonarData*)pointer)->Header.Checksum, CRC16.Generate((byte*)(pointer + checksumSize), packetSize - checksumSize));//
                             if(Packet.Verify((Packet.Header*)pointer, packetSize))
                             {
+                                //debug.AppendLine(", VALID");//
                                 Data = (Packet.SonarData*)pointer;
                                 OnUpdate?.Invoke(Data);
+                            }
+                            else
+                            {
+                                //debug.AppendLine(", FAIL");//
+                                //debug.LogMode = DebugLogMode.Warning;
                             }
                         }
 
                         Marshal.FreeHGlobal(pointer);
                     }
+
+                    //debug.Print();//
                 } while(false);
             } // try
             catch(TimeoutException) { }
