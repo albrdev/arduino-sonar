@@ -152,8 +152,15 @@ public static class SonarSerialReceiver
     public static void End()
     {
         s_IsActive = false;
-        s_ReceivingThread.Join();//*
-        s_SerialPort.Close();
+        if(s_ReceivingThread.IsAlive)
+        {
+            s_ReceivingThread.Join();//*
+        }
+
+        if(s_SerialPort.IsOpen)
+        {
+            s_SerialPort.Close();
+        }
     }
 
     /*private static void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
