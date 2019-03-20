@@ -406,7 +406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d899cce1bd6e8a45a9b47060eb81e9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_COMPortName: COM11
+  m_COMPortName: COM23
   m_BaudRate: 9600
   m_Scale: 1
   m_Data: []
