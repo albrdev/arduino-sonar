@@ -32,11 +32,11 @@ bool Timer::Check(void)
 {
     if(!m_Active) return false;
 
-    unsigned long int curTime = m_TimeCallback();
-    bool result = (curTime - m_PreviousTime) >= m_Interval;
+    unsigned long int currentTime = m_TimeCallback();
+    bool result = (currentTime - m_PreviousTime) >= m_Interval;
     if(result)
     {
-        m_PreviousTime = m_DelayCompensation ? m_PreviousTime + m_Interval : curTime;
+        m_PreviousTime = m_DelayCompensation ? m_PreviousTime + m_Interval : currentTime;
     }
 
     return result;

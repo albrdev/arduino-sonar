@@ -24,7 +24,7 @@ namespace Assets.Scripts.Networking
             public UInt16 Checksum { get; }
             public byte Type { get; }
 
-            public Header(UInt16 checksum, byte type)
+            public Header(UInt16 checksum, byte type) : this()
             {
                 Checksum = checksum;
                 Type = type;
@@ -39,7 +39,7 @@ namespace Assets.Scripts.Networking
             public UInt32 Distance { get; }
             public UInt32 Angle { get; }
 
-            public unsafe SonarData(UInt32 distance, UInt32 angle)
+            public unsafe SonarData(UInt32 distance, UInt32 angle) : this()
             {
                 Header = new Header(0, (byte)PacketType.SonarData);
                 Distance = distance;
