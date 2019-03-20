@@ -14,8 +14,22 @@ using System.Text;
 [StructLayout(LayoutKind.Sequential, Pack = 1), Serializable]
 public struct SonarInput
 {
-    public float Distance { get; }
-    public float Angle { get; }
+    [SerializeField, ReadOnlyProperty]
+    private float m_Distance;
+    [SerializeField, ReadOnlyProperty]
+    private float m_Angle;
+
+    public float Distance
+    {
+        get { return m_Distance; }
+        private set { m_Distance = value; }
+    }
+
+    public float Angle
+    {
+        get { return m_Angle; }
+        private set { m_Angle = value; }
+    }
 
     public Quaternion Rotation
     {
@@ -53,7 +67,7 @@ public struct SonarInput
         return string.Format("{0}({1}, {2})", nameof(SonarInput), Distance, Angle);
     }
 
-    public SonarInput(float distance, float angle)
+    public SonarInput(float distance, float angle) : this()
     {
         Distance = distance;
         Angle = angle;
