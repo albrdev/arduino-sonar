@@ -1,7 +1,6 @@
 #include "LED.hpp"
-#include <Arduino.h>    /* pinMode(), digitalWrite(), millis(), digitalPinToPort(), digitalPinToBitMask(), portOutputRegister() */
-
-#define DIGITALREAD(pin) ((*portOutputRegister(digitalPinToPort(pin)) & digitalPinToBitMask(pin)) != 0 ? HIGH : LOW) // *portOutputRegister(digitalPinToPort(pin)) & digitalPinToBitMask(pin) != 0 ? HIGH : LOW
+#include <Arduino.h>    /* pinMode(), digitalWrite(), millis() */
+#include "generic.h"
 
 void LED::_SetState(const bool value)
 {
