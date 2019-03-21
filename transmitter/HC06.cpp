@@ -1,4 +1,63 @@
 #include "HC06.hpp"
+#include <Arduino.h>    /* millis() */
+#include "generic.h"
+
+#define HC06_NAME_MAXLENGTH 20U
+#define HC06_PIN_LENGTH     4U
+
+/*
+AT          OK              Used to verify communication
+AT+VERSION  OKlinvorV1.8    The firmware version(version might depend on firmware)
+AT+NAMExyz  OKsetname       Sets the module name to "xyz"
+AT+PIN1234  OKsetPIN        Sets the module PIN to 1234
+AT+BAUD1    OK1200          Sets the baud rate to 1200
+AT+BAUD2    OK2400          Sets the baud rate to 2400
+AT+BAUD3    OK4800          Sets the baud rate to 4800
+AT+BAUD4    OK9600          Sets the baud rate to 9600
+AT+BAUD5    OK19200         Sets the baud rate to 19200
+AT+BAUD6    OK38400         Sets the baud rate to 38400
+AT+BAUD7    OK57600         Sets the baud rate to 57600
+AT+BAUD8    OK115200        Sets the baud rate to 115200
+AT+BAUD9    OK230400        Sets the baud rate to 230400
+AT+BAUDA    OK460800        Sets the baud rate to 460800
+AT+BAUDB    OK921600        Sets the baud rate to 921600
+AT+BAUDC    OK1382400       Sets the baud rate to 1382400
+*/
+
+#define HC06_AT                 "AT"
+#define HC06_OK                 "OK"
+#define HC06_PING_COMMAND       HC06_AT
+#define HC06_PING_RESPONSE      HC06_OK
+#define HC06_VERSION_COMMAND    HC06_AT "+VERSION"
+#define HC06_NAME_COMMAND       HC06_AT "+NAME"
+#define HC06_NAME_RESPONSE      HC06_OK "setname"
+#define HC06_PIN_COMMAND        HC06_AT "+PIN"
+#define HC06_PIN_RESPONSE       HC06_OK "setPIN"
+
+#define HC06_BAUD1200_COMMAND       HC06_AT "+BAUD1"
+#define HC06_BAUD1200_RESPONSE      HC06_OK "1200"
+#define HC06_BAUD2400_COMMAND       HC06_AT "+BAUD2"
+#define HC06_BAUD2400_RESPONSE      HC06_OK "2400"
+#define HC06_BAUD4800_COMMAND       HC06_AT "+BAUD3"
+#define HC06_BAUD4800_RESPONSE      HC06_OK "4800"
+#define HC06_BAUD9600_COMMAND       HC06_AT "+BAUD4"
+#define HC06_BAUD9600_RESPONSE      HC06_OK "9600"
+#define HC06_BAUD19200_COMMAND      HC06_AT "+BAUD5"
+#define HC06_BAUD19200_RESPONSE     HC06_OK "19200"
+#define HC06_BAUD38400_COMMAND      HC06_AT "+BAUD6"
+#define HC06_BAUD38400_RESPONSE     HC06_OK "38400"
+#define HC06_BAUD57600_COMMAND      HC06_AT "+BAUD7"
+#define HC06_BAUD57600_RESPONSE     HC06_OK "57600"
+#define HC06_BAUD115200_COMMAND     HC06_AT "+BAUD8"
+#define HC06_BAUD115200_RESPONSE    HC06_OK "115200"
+#define HC06_BAUD230400_COMMAND     HC06_AT "+BAUD9"
+#define HC06_BAUD230400_RESPONSE    HC06_OK "230400"
+#define HC06_BAUD460800_COMMAND     HC06_AT "+BAUDA"
+#define HC06_BAUD460800_RESPONSE    HC06_OK "460800"
+#define HC06_BAUD921600_COMMAND     HC06_AT "+BAUDB"
+#define HC06_BAUD921600_RESPONSE    HC06_OK "921600"
+#define HC06_BAUD1382400_COMMAND    HC06_AT "+BAUDC"
+#define HC06_BAUD1382400_RESPONSE   HC06_OK "1382400"
 
 const char *HC06::SendCommand(const char *const command, const int responseLength)
 {
@@ -40,7 +99,8 @@ bool HC06::Ping(void)
 
 const char *HC06::GetVersion(void)
 {
-    return SendCommand(HC06_VERSION_COMMAND, 12);
+    const char *result = SendCommand(HC06_VERSION_COMMAND, 12);
+    return result != nullptr ? (result + STRLEN(HC06_OK)) : nullptr;
 }
 
 bool HC06::SetBaudRate(const HC06BaudRate value)

@@ -5,6 +5,8 @@
 #include <Arduino.h>    /* digitalPinToPort(), digitalPinToBitMask(), portOutputRegister() */
 #endif
 
+#define STRLEN(arr) ((sizeof(arr) / sizeof(*arr)) - 1U)
+
 #ifdef __AVR__
 #define DIGITALREAD(pin) ((*portOutputRegister(digitalPinToPort(pin)) & digitalPinToBitMask(pin)) != 0 ? HIGH : LOW) // *portOutputRegister(digitalPinToPort(pin)) & digitalPinToBitMask(pin) != 0 ? HIGH : LOW
 #endif
