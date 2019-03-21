@@ -2,21 +2,14 @@
 #include <assert.h>
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include <Servo.h>
 #include "SonicSensor.hpp"
 #include "ExtendedStepper.hpp"
-#include "HC06.hpp"
-#include "math.h"
-#include "packet.h"
 #include "Timer.hpp"
 #include "LED.hpp"
 #include "Button.hpp"
-
-float getAngle(const int steps, const int maxSteps)
-{
-    float angle = 360.0f * normalize01((float)steps, 0, maxSteps);
-    return angle < 360.0f ? angle : 0.0f;
-}
+#include "HC06.hpp"
+#include "math.h"
+#include "packet.h"
 
 const double SONICSENSOR_MINRANGE = 0.02;
 const double SONICSENSOR_MAXRANGE = 4.0;
@@ -28,8 +21,6 @@ SonicSensor sonicSensor(4, 5, SONICSENSOR_RANGEFACTOR, SONICSENSOR_TIMEOUT);
 ExtendedStepper stepMotor(64, 8, 9, 10, 11);
 //const double ROTATION_MAX = 360.0;
 const double ROTATION_MAX = 180.0;
-
-Servo servoMotor;
 
 HC06 bluetooth(2, 3);
 Timer timer(50UL, true, false);
@@ -148,7 +139,6 @@ void setup(void)
 {
     // 300, 600, 1200, 2400, 4800, 9600, 14400, 19200, 28800, 38400, 57600, 115200
     Serial.begin(9600, SERIAL_8N1);
-    //servoMotor.attach(8);
 
     setupBluetooth();
 
@@ -162,20 +152,6 @@ void setup(void)
     Serial.println("Press pause button to start");
     Serial.println("");
     Serial.flush();
-}
-
-void servogo(void)
-{
-    int pos;
-    for(pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-  // in steps of 1 degree
-        servoMotor.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(15);                       // waits 15ms for the servo to reach the position
-    }
-    for(pos = 180; pos >= 0; pos -= 1) { // goes from 180 degrees to 0 degrees
-        servoMotor.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(15);                       // waits 15ms for the servo to reach the position
-    }
 }
 
 void loop(void)

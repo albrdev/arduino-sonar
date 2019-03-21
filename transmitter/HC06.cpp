@@ -6,6 +6,8 @@
 #define HC06_PIN_LENGTH     4U
 
 /*
+https://mcuoneclipse.com/2013/06/19/using-the-hc-06-bluetooth-module/
+
 AT          OK              Used to verify communication
 AT+VERSION  OKlinvorV1.8    The firmware version(version might depend on firmware)
 AT+NAMExyz  OKsetname       Sets the module name to "xyz"
@@ -70,22 +72,13 @@ const char *HC06::SendCommand(const char *const command, const int responseLengt
     start = millis();
     while((availableBytes = SoftwareSerial::available()) < responseLength)
     {
-        if(millis() - start >= m_Timeout)
-        {
-            return nullptr;
-        }
+        if(millis() - start >= m_Timeout) { return nullptr; }
     }
 
-    if(availableBytes > (int)HC06_BUFFER_LENGTH)
-    {
-        return nullptr;
-    }
+    if(availableBytes > (int)HC06_BUFFER_LENGTH) { return nullptr; }
 
     size_t readLen = SoftwareSerial::readBytes(m_CommandBuffer, availableBytes);
-    if(readLen <= 0U || readLen > (int)HC06_BUFFER_LENGTH)
-    {
-        return nullptr;
-    }
+    if(readLen <= 0U || readLen > (int)HC06_BUFFER_LENGTH) { return nullptr; }
 
     m_CommandBuffer[readLen] = '\0';
     return m_CommandBuffer;
@@ -181,10 +174,7 @@ bool HC06::SetBaudRate(const HC06BaudRate value)
 bool HC06::SetName(const char *const value)
 {
     size_t len = strlen(value);
-    if(len > HC06_NAME_MAXLENGTH)
-    {
-        return false;
-    }
+    if(len > HC06_NAME_MAXLENGTH) { return false; }
 
     strcpy(m_CommandBuffer, HC06_NAME_COMMAND);
     strncpy(m_CommandBuffer + STRLEN(HC06_NAME_COMMAND), value, HC06_NAME_MAXLENGTH);
@@ -197,10 +187,7 @@ bool HC06::SetName(const char *const value)
 bool HC06::SetPIN(const char *const value)
 {
     size_t len = strlen(value);
-    if(len != HC06_PIN_LENGTH)
-    {
-        return false;
-    }
+    if(len != HC06_PIN_LENGTH) { return false; }
 
     strcpy(m_CommandBuffer, HC06_PIN_COMMAND);
     strncpy(m_CommandBuffer + STRLEN(HC06_PIN_COMMAND), value, HC06_PIN_LENGTH);
@@ -210,35 +197,12 @@ bool HC06::SetPIN(const char *const value)
     return result != nullptr && strcmp(result, HC06_PIN_RESPONSE) == 0;
 }
 
-void HC06::Begin(const HC06BaudRate baudRate)
-{
-    SoftwareSerial::begin((long int)baudRate);
-}
-
-size_t HC06::Write(const uint8_t *const buffer, const size_t length)
-{
-    return SoftwareSerial::write(buffer, length);
-}
-
-size_t HC06::Write(const char *const buffer, const size_t length)
-{
-    return SoftwareSerial::write(buffer, length);
-}
-
-size_t HC06::Write(const char *const str)
-{
-    return SoftwareSerial::write(str);
-}
-
-size_t HC06::Write(const uint8_t byte)
-{
-    return SoftwareSerial::write(byte);
-}
-
-void HC06::Flush(void)
-{
-    SoftwareSerial::flush();
-}
+void HC06::Begin(const HC06BaudRate baudRate) { SoftwareSerial::begin((long int)baudRate); }
+size_t HC06::Write(const uint8_t *const buffer, const size_t length) { return SoftwareSerial::write(buffer, length); }
+size_t HC06::Write(const char *const buffer, const size_t length) { return SoftwareSerial::write(buffer, length); }
+size_t HC06::Write(const char *const str) { return SoftwareSerial::write(str); }
+size_t HC06::Write(const uint8_t byte) { return SoftwareSerial::write(byte); }
+void HC06::Flush(void) { SoftwareSerial::flush(); }
 
 HC06::operator bool(void) { return SoftwareSerial::operator bool(); }
 

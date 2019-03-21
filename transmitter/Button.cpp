@@ -30,18 +30,18 @@ void Button::Poll(void)
 
         if(state)
         {
-            if(m_PushCallback != nullptr) m_PushCallback();
+            if(m_PushCallback != nullptr) { m_PushCallback(); }
         }
         else
         {
-            if(m_ReleaseCallback != nullptr) m_ReleaseCallback();
+            if(m_ReleaseCallback != nullptr) { m_ReleaseCallback(); }
         }
     }
     else
     {
         if(state)
         {
-            if(m_HoldCallback != nullptr) m_HoldCallback();
+            if(m_HoldCallback != nullptr) { m_HoldCallback(); }
         }
     }
 }

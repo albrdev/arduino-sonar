@@ -4,6 +4,7 @@
 #endif
 
 #ifndef __AVR__
+// https://www.microchip.com/webdoc/AVRLibcReferenceManual/group__util__crc_1ga95371c87f25b0a2497d9cba13190847f.html
 static uint16_t _crc16_update(uint16_t crc, uint8_t a)
 {
     uint8_t i;
@@ -11,7 +12,7 @@ static uint16_t _crc16_update(uint16_t crc, uint8_t a)
     crc = (uint16_t)(crc ^ a);
     for(i = 0U; i < 8U; i++)
     {
-        crc = crc & 1 ? (uint16_t)((crc >> 1) ^ 0xA001) : (uint16_t)(crc >> 1);
+        crc = (crc & 1) != 0 ? (uint16_t)((crc >> 1) ^ 0xA001) : (uint16_t)(crc >> 1);
     }
 
     return crc;

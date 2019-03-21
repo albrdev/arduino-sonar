@@ -32,20 +32,14 @@ void ExtendedStepper::Rotate(const double degrees)
 
 void ExtendedStepper::UpdateRotation(void)
 {
-    if(m_Steps >= m_StepsMax)
-    {
-        return;
-    }
+    if(m_Steps >= m_StepsMax) { return; }
 
     step(m_StepDirection);
     m_Steps++;
 
     if(m_Steps >= m_StepsMax)
     {
-        if(m_OnEndRotationCallback != nullptr)
-        {
-            (*m_OnEndRotationCallback)();
-        }
+        if(m_OnEndRotationCallback != nullptr) { m_OnEndRotationCallback(); }
     }
 }
 

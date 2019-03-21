@@ -47,11 +47,7 @@ void LED::Blink(unsigned long int interval)
 void LED::Stop(const bool reset)
 {
     m_Active = false;
-
-    if(reset)
-    {
-        _SetState(m_InitialState);
-    }
+    if(reset) { _SetState(m_InitialState); }
 }
 
 void LED::Poll(void)

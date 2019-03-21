@@ -30,7 +30,7 @@ void Timer::Stop(void)
 
 bool Timer::Check(void)
 {
-    if(!m_Active) return false;
+    if(!m_Active) { return false; }
 
     unsigned long int currentTime = m_TimeCallback();
     bool result = (currentTime - m_PreviousTime) >= m_Interval;
@@ -46,10 +46,7 @@ void Timer::Poll(void)
 {
     if(Check())
     {
-        if(m_TriggerCallback != nullptr)
-        {
-            m_TriggerCallback();
-        }
+        if(m_TriggerCallback != nullptr) { m_TriggerCallback(); }
     }
 }
 
@@ -63,8 +60,5 @@ Timer::Timer(const unsigned long int interval, const bool delayCompensation, con
     m_Active = active;
     m_TimeCallback = timeCallback;
 
-    if(m_Active)
-    {
-        Start();
-    }
+    if(m_Active) { Start(); }
 }
