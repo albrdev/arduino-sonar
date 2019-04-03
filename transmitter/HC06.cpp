@@ -198,6 +198,7 @@ bool HC06::SetPIN(const char *const value)
 }
 
 void HC06::Begin(const HC06BaudRate baudRate) { SoftwareSerial::begin((long int)baudRate); }
+int HC06::AvailableBytes(void) { return SoftwareSerial::available(); }
 size_t HC06::Write(const uint8_t *const buffer, const size_t length) { return SoftwareSerial::write(buffer, length); }
 size_t HC06::Write(const char *const buffer, const size_t length) { return SoftwareSerial::write(buffer, length); }
 size_t HC06::Write(const char *const str) { return SoftwareSerial::write(str); }

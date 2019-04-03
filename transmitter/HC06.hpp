@@ -38,6 +38,7 @@ public:
 
     void Begin(const HC06BaudRate baudRate);
 
+    int AvailableBytes(void);
     size_t Write(const uint8_t *const buffer, const size_t length);
     size_t Write(const char *const buffer, const size_t length);
     size_t Write(const char *const str);
