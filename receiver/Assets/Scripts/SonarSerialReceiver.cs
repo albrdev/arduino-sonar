@@ -57,7 +57,7 @@ public struct SonarInput
         return System.BitConverter.ToSingle(rawdata, 0);
     }
 
-    public static unsafe implicit operator SonarInput(Packet.SonarData* packet)
+    public static unsafe implicit operator SonarInput(SonarData* packet)
     {
         return new SonarInput(ConvToFloat(packet->Distance), ConvToFloat(packet->Angle));
     }
@@ -151,7 +151,7 @@ public static class SonarSerialReceiver
         s_SerialPort.Handshake = s_Settings.HandshakeMode;
         //s_SerialPort.RtsEnable = true;//*
         //s_SerialPort.DtrEnable = true;//*
-        //s_SerialPort.ReceivedBytesThreshold = Marshal.SizeOf(typeof(Packet.SonarData));//*
+        //s_SerialPort.ReceivedBytesThreshold = Marshal.SizeOf(typeof(SonarData));//*
 
         s_SerialPort.ReadTimeout = s_Settings.ReadTimeout;
         s_SerialPort.WriteTimeout = s_Settings.WriteTimeout;
@@ -190,7 +190,7 @@ public static class SonarSerialReceiver
                 do
                 {
                     //DebugStringBuilder debug = new DebugStringBuilder("RECV: ");//
-                    int packetSize = Marshal.SizeOf(typeof(Packet.SonarData));
+                    int packetSize = Marshal.SizeOf(typeof(SonarData));
 
                     int packetCount = s_SerialPort.BytesToRead / packetSize;
                     //debug.Append("TotalSize={0}, PacketCount={1}", s_SerialPort.BytesToRead, packetCount);//
@@ -211,11 +211,11 @@ public static class SonarSerialReceiver
                         {
                             fixed(byte* pointer = packet.ToArray())
                             {
-                                //int checksumSize = Marshal.SizeOf(((Packet.SonarData*)pointer)->Header.Checksum);//
-                                //debug.Append("PacketCRC={0}, LocalCRC={1}", ((Packet.SonarData*)pointer)->Header.Checksum, CRC16.Generate((byte*)(pointer + checksumSize), packetSize - checksumSize));//
+                                //int checksumSize = Marshal.SizeOf(((SonarData*)pointer)->Header.Checksum);//
+                                //debug.Append("PacketCRC={0}, LocalCRC={1}", ((SonarData*)pointer)->Header.Checksum, CRC16.Generate((byte*)(pointer + checksumSize), packetSize - checksumSize));//
                                 if(Packet.Verify((Packet.Header*)pointer, packetSize))
                                 {
-                                    Data = (Packet.SonarData*)pointer;
+                                    Data = (SonarData*)pointer;
                                     OnUpdate?.Invoke(Data);
                                     //debug.AppendLine(", VALID");//
                                     //debug.AppendLine(", {0}", Data);//

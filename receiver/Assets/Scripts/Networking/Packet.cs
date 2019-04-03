@@ -30,28 +30,5 @@ namespace Assets.Scripts.Networking
                 Type = type;
             }
         }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct SonarData
-        {
-            public Header Header { get; private set; }
-
-            public UInt32 Distance { get; }
-            public UInt32 Angle { get; }
-
-            public unsafe SonarData(UInt32 distance, UInt32 angle) : this()
-            {
-                Header = new Header(0, (byte)PacketType.SonarData);
-                Distance = distance;
-                Angle = angle;
-
-                int size = Marshal.SizeOf(this);
-                byte[] buf = new byte[size];
-                IntPtr unmanagedPointer = Marshal.AllocHGlobal(size);
-                Marshal.Copy(buf, 0, unmanagedPointer, size);
-                typeof(Header).GetProperty("Checksum").SetValue(Header, CRC16.Generate((byte*)(unmanagedPointer + sizeof(UInt16)), size - sizeof(UInt16)), null);
-                Marshal.FreeHGlobal(unmanagedPointer);
-            }
-        }
     }
 }

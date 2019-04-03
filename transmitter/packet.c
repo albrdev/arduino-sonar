@@ -20,11 +20,3 @@ void packet_mkheader(struct _packet_header *const pkt, const size_t size, const 
 
     pkt->checksum = mkcrc16((uint8_t *)pkt + sizeof(pkt->checksum), size - sizeof(pkt->checksum));
 }
-
-void packet_mksonardata(struct _packet_sonardata *const pkt, const float distance, const float angle)
-{
-    memcpy(&pkt->distance, &distance, sizeof(pkt->distance));
-    memcpy(&pkt->angle, &angle, sizeof(pkt->angle));
-
-    packet_mkheader(&pkt->header, sizeof(*pkt), PT_SONARDATA);
-}

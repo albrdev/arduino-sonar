@@ -9,7 +9,7 @@
 #include "Button.hpp"
 #include "HC06.hpp"
 #include "math.h"
-#include "packet.h"
+#include "custom_packets.h"
 
 const double SONICSENSOR_MINRANGE = 0.02;
 const double SONICSENSOR_MAXRANGE = 4.0;
