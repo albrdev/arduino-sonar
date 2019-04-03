@@ -16,13 +16,13 @@ const double SONICSENSOR_MAXRANGE = 4.0;
 const double SONICSENSOR_RESOLUTION = 0.003;
 const double SONICSENSOR_RANGEFACTOR = 1000000.0;
 const unsigned long int SONICSENSOR_TIMEOUT = 50000UL;
-SonicSensor sonicSensor(4, 5, SONICSENSOR_RANGEFACTOR, SONICSENSOR_TIMEOUT);
+SonicSensor sonicSensor(2, 3, SONICSENSOR_RANGEFACTOR, SONICSENSOR_TIMEOUT);
 
 ExtendedStepper stepMotor(64, 8, 9, 10, 11);
 //const double ROTATION_MAX = 360.0;
 const double ROTATION_MAX = 180.0;
 
-HC06 bluetooth(2, 3);
+HC06 bluetooth(4, 5);
 Timer timer(50UL, true, false);
 LED led(6, false);
 Button pauseButton(7);
