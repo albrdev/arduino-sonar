@@ -6,7 +6,7 @@
 #include "ExtendedStepper.hpp"
 #include "Timer.hpp"
 #include "LED.hpp"
-#include "Button.hpp"
+#include "InterruptIn.hpp"
 #include "HC06.hpp"
 #include "math.h"
 #include "custom_packets.h"
@@ -25,7 +25,7 @@ const double ROTATION_MAX = 180.0;
 HC06 bluetooth(4, 5);
 Timer timer(50UL, true, false);
 LED led(6, false);
-Button pauseButton(7);
+InterruptIn pauseButton(7);
 
 void restartRotation(void)
 {
@@ -59,10 +59,11 @@ void transmitData(void)
 }
 
 bool isPaused = true;
-void togglePause(void)
+void togglePause(const bool state)
 {
-    isPaused = !isPaused;
+    if(state) { return; }
 
+    isPaused = !isPaused;
     if(isPaused)
     {
         Serial.println("Paused");
@@ -147,7 +148,7 @@ void setup(void)
     stepMotor.Rotate(ROTATION_MAX / 2.0);
 
     timer.SetTriggerCallback(transmitData);
-    pauseButton.SetReleaseCallback(togglePause);
+    pauseButton.SetOnStateChangedCallback(togglePause);
 
     Serial.println("Press pause button to start");
     Serial.println("");
