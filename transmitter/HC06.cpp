@@ -75,10 +75,10 @@ const char *HC06::SendCommand(const char *const command, const int responseLengt
         if(millis() - start >= m_Timeout) { return nullptr; }
     }
 
-    if(availableBytes > (int)HC06_BUFFER_LENGTH) { return nullptr; }
+    if(availableBytes > (int)HC06_BUFFER_SIZE) { return nullptr; }
 
     size_t readLen = SoftwareSerial::readBytes(m_CommandBuffer, availableBytes);
-    if(readLen <= 0U || readLen > (int)HC06_BUFFER_LENGTH) { return nullptr; }
+    if(readLen <= 0U || readLen > (int)HC06_BUFFER_SIZE) { return nullptr; }
 
     m_CommandBuffer[readLen] = '\0';
     return m_CommandBuffer;

@@ -3,7 +3,7 @@
 
 #include <SoftwareSerial.h> /* SoftwareSerial */
 
-#define HC06_BUFFER_LENGTH  (7U + 20U + 1U)
+#define HC06_BUFFER_SIZE  (7U + 20U + 1U)
 
 typedef enum
 {
@@ -25,7 +25,7 @@ class HC06 : private SoftwareSerial
 {
 private:
     unsigned long int m_Timeout = 500UL;
-    char m_CommandBuffer[HC06_BUFFER_LENGTH];
+    char m_CommandBuffer[HC06_BUFFER_SIZE];
 
     const char *SendCommand(const char *const command, const int responseLength);
 
